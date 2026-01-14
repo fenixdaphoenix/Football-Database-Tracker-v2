@@ -2,47 +2,49 @@
 {% block title %}Academic Records{% endblock %}
 {% block content %}
 
-<h2 class="mb-3">Academic Records</h2>
+<h1 class="text-center mb-4">📚 Academic List</h1>
 
-<form method="get" class="mb-4 d-flex align-items-center">
-    <label for="school-filter" class="form-label fw-bold me-2">Filter by School:</label>
-    <select name="school" id="school-filter" class="form-select d-inline-block me-3" style="width:180px;">
-        <option value="">All Schools</option>
-        {% for val, label in schools %}
-            <option value="{{ val }}" {% if request.GET.school == val %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-    </select>
+<div class="mb-4 text-center">
+    <form method="get" class="d-inline-block">
+        <select name="school" class="form-select d-inline-block w-auto me-2">
+            <option value="">All Schools</option>
+            {% for val, label in schools %}
+                <option value="{{ val }}" {% if request.GET.school == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
 
-    <label for="grade-filter" class="form-label fw-bold me-2">Filter by Grade:</label>
-    <select name="grade" id="grade-filter" class="form-select d-inline-block me-3" style="width:140px;">
-        <option value="">All Grades</option>
-        {% for g in grade_levels %}
-            <option value="{{ g }}" {% if request.GET.grade == g %}selected{% endif %}>{{ g }}</option>
-        {% endfor %}
-    </select>
+        <select name="grade" class="form-select d-inline-block w-auto me-2">
+            <option value="">All Grades</option>
+            {% for g in grade_levels %}
+                <option value="{{ g }}" {% if request.GET.grade == g %}selected{% endif %}>{{ g }}</option>
+            {% endfor %}
+        </select>
 
-    <button type="submit" class="btn btn-primary btn-sm">Apply</button>
-    <a href="{% url 'academic_list' %}" class="btn btn-secondary btn-sm ms-2">Reset</a>
-</form>
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        {% if request.GET.school or request.GET.grade %}
+            <a href="{% url 'academic_list' %}" class="btn btn-secondary btn-sm">Reset</a>
+        {% endif %}
+    </form>
+</div>
 
-<table class="table table-hover align-middle">
+<table class="table table-bordered table-hover fs-4">
     <thead class="table-dark">
         <tr>
-            <th style="width: 20%;">Player</th>
-            <th style="width: 20%;">School</th>
-            <th style="width: 15%;">Grade Level</th>
-            <th style="width: 15%;">Average Score</th>
-            <th style="width: 10%;">Status</th>
-            <th style="width: 15%;">Actions</th>
+            <th class="px-4 py-3">Player</th>
+            <th class="px-4 py-3">School</th>
+            <th class="px-4 py-3">Grade Level</th>
+            <th class="px-4 py-3">Average Score</th>
+            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3 text-center">Actions</th>
         </tr>
     </thead>
     <tbody>
         {% for record in records %}
             <tr>
-                <td>{{ record.player.name }}</td>
-                <td class="text-truncate" style="max-width: 200px;">{{ record.player.current_school }}</td>
+                <td class="px-4 py-3">{{ record.player.name }}</td>
+                <td class="px-4 py-3">{{ record.player.current_school }}</td>
 
-                <td>
+                <td class="px-4 py-3">
                     {% if record.grade_level %}
                         {{ record.grade_level }}
                     {% else %}
@@ -50,7 +52,7 @@
                     {% endif %}
                 </td>
 
-                <td>
+                <td class="px-4 py-3">
                     {% if record.average_score %}
                         {{ record.average_score|floatformat:"-1" }}%
                     {% else %}
@@ -58,7 +60,7 @@
                     {% endif %}
                 </td>
 
-                <td>
+                <td class="px-4 py-3">
                     {% if record.average_score %}
                         {% if record.average_score >= 75 %}
                             <span class="badge bg-success">Passing</span>
@@ -73,20 +75,23 @@
                         {% endif %}
                     {% endif %}
                 </td>
-                <td>
-                    <a href="{% url 'edit_academic' record.id %}" class="btn btn-warning btn-sm">✏️ Edit</a>
+                <td class="px-4 py-3 text-center">
+                    <a href="{% url 'edit_academic' record.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
                     <a href="{% url 'delete_academic' record.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
                 </td>
             </tr>
         {% empty %}
         <tr>
-            <td colspan="6" class="text-center text-muted">No academic records available.</td>
+            <td colspan="6" class="text-center text-muted px-4 py-3">No academic records available.</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
-<p class="text-muted mb-4"><small>Students with scores above 75 are marked as passing, edit the scores and passing remarks here.</small></p>
-
+<a href="{% url 'add_academic' %}" 
+    class="btn btn-success rounded-circle shadow-lg d-flex align-items-center justify-content-center"
+    style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; font-size: 28px;">
+    +
+</a>
 
 {% endblock %}

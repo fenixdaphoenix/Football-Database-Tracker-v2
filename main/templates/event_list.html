@@ -2,77 +2,52 @@
 {% block title %}Events{% endblock %}
 
 {% block content %}
-<h2 class="mb-3">Events</h2>
+<h1 class="text-center mb-4">📅 Event List</h1>
 
-<style>
-  .table-fixed { table-layout: fixed; width: 100%; }
-  .table th, .table td { vertical-align: middle; }
+<div class="mb-4 text-center">
+    <form method="get" class="d-inline-block">
+        <select name="type" class="form-select d-inline-block w-auto me-2">
+            <option value="">All Event Types</option>
+            {% for val,label in event_types %}
+                <option value="{{ val }}" {% if type_filter == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        {% if type_filter %}
+            <a href="{% url 'event_list' %}" class="btn btn-secondary btn-sm">Reset</a>
+        {% endif %}
+    </form>
+</div>
 
-  .desc-cell {
-    white-space: pre-wrap;       
-    overflow-wrap: anywhere;     
-    word-break: break-word;      
-    max-width: 48rem;            
-  }
-
-  .action-btns { display:flex; gap:.35rem; align-items:center; justify-content:center; }
-  th.actions-col, td.actions-col { width:140px; text-align:center; vertical-align:middle; }
-
-  .action-btns .btn {
-    padding:.35rem .6rem;
-    font-size:.9rem;
-    border-radius:.25rem;
-  }
-
-  @media (max-width: 800px) {
-    .desc-cell { max-width: 18rem; }
-    th.actions-col, td.actions-col { width:120px; }
-  }
-</style>
-
-<form method="get" class="mb-3 d-flex gap-2 align-items-center flex-wrap">
-  <label class="form-label fw-bold me-2">Filter by Type:</label>
-  <select name="type" class="form-select d-inline-block" style="width:180px;">
-    <option value="">All Event Types</option>
-    {% for val,label in event_types %}
-      <option value="{{ val }}" {% if type_filter == val %}selected{% endif %}>{{ label }}</option>
-    {% endfor %}
-  </select>
-  <button class="btn btn-primary btn-sm" type="submit">Apply</button>
-  <a href="{% url 'event_list' %}" class="btn btn-secondary btn-sm ms-2">Reset</a>
-</form>
-
-<table class="table table-bordered table-hover table-fixed">
+<table class="table table-bordered table-hover fs-4">
   <thead class="table-dark">
     <tr>
-      <th style="width:16%;">Title</th>
-      <th style="width:12%;">Date</th>
-      <th style="width:10%;">Time</th>
-      <th style="width:12%;">Type</th>
-      <th style="width:14%;">Location</th>
-      <th style="width:36%;">Description</th>
-      <th class="actions-col">Actions</th>
+      <th class="px-4 py-3">Title</th>
+      <th class="px-4 py-3">Date</th>
+      <th class="px-4 py-3">Time</th>
+      <th class="px-4 py-3">Type</th>
+      <th class="px-4 py-3">Location</th>
+      <th class="px-4 py-3">Description</th>
+      <th class="px-4 py-3 text-center">Actions</th>
     </tr>
   </thead>
   <tbody>
     {% for event in events %}
     <tr>
-      <td>{{ event.title }}</td>
-      <td>{{ event.date }}</td>
-      <td>{{ event.time }}</td>
-      <td>{{ event.get_type_display }}</td>
-      <td>{{ event.location }}</td>
-      <td class="desc-cell">{{ event.description }}</td>
-      <td class="actions-col">
-        <div class="action-btns">
-          <a href="{% url 'edit_event' event.id %}" class="btn btn-warning btn-sm" title="Edit">Edit</a>
-          <a href="{% url 'delete_event' event.id %}" class="btn btn-danger btn-sm" title="Delete">Delete</a>
-        </div>
+      <td class="px-4 py-3">{{ event.title }}</td>
+      <td class="px-4 py-3">{{ event.date }}</td>
+      <td class="px-4 py-3">{{ event.time }}</td>
+      <td class="px-4 py-3">{{ event.get_type_display }}</td>
+      <td class="px-4 py-3">{{ event.location }}</td>
+      <td class="px-4 py-3">{{ event.description }}</td>
+      <td class="px-4 py-3 text-center">
+        <a href="{% url 'edit_event' event.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
+        <a href="{% url 'delete_event' event.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
       </td>
     </tr>
     {% empty %}
     <tr>
-      <td colspan="7" class="text-center">No events scheduled.</td>
+      <td colspan="7" class="text-center text-muted px-4 py-3">No events scheduled.</td>
     </tr>
     {% endfor %}
   </tbody>

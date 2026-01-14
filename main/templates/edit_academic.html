@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Edit Academic Record{% endblock %}
+{% block content %}
+<h2>Edit Academic Record — {{ record.player.name }}</h2>
+<p class="text-muted mb-3"><small>Enter the grade level and average score for this student.</small></p>
+
+<form method="post" class="card p-3 shadow-sm">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+  {{ form.errors }}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Save</button>
+  <a href="{% url 'academic_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><title>Injury Records</title></head>
+<body>
+    <h1>Injury Records</h1>
+    <a href="{% url 'add_injury' %}">+ Add Injury Record</a>
+    <ul>
+        {% for injury in injuries %}
+            <li>
+                {{ injury.date }} — {{ injury.player.name }}: {{ injury.injury_type }} ({{ injury.status }})
+                <a href="{% url 'edit_injury' injury.id %}">Edit</a>
+            </li>
+        {% empty %}
+            <li>No injuries recorded.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

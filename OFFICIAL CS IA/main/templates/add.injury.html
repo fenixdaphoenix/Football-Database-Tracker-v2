@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><title>Add Injury</title></head>
+<body>
+    <h1>Add Injury</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+    <a href="{% url 'injury_list' %}">Back to Injuries</a>
+</body>
+</html>

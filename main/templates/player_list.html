@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Players - Football Tracker{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">👥 Player List</h1>
+
+<div class="mb-4 text-center">
+    <form method="get" class="d-inline-block">
+        <select name="position" class="form-select d-inline-block w-auto me-2">
+            <option value="">All Positions</option>
+            {% for value, label in positions %}
+                <option value="{{ value }}" {% if position_filter == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="gender" class="form-select d-inline-block w-auto me-2">
+            <option value="">All Genders</option>
+            {% for val,label in genders %}
+                <option value="{{ val }}" {% if gender_filter == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="age_category" class="form-select d-inline-block w-auto me-2">
+            <option value="">All Age Groups</option>
+            {% for value, label in age_categories %}
+                <option value="{{ value }}" {% if age_filter == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        {% if position_filter or age_filter %}
+            <a href="{% url 'player_list' %}" class="btn btn-secondary btn-sm">Reset</a>
+        {% endif %}
+    </form>
+</div>
+
+<table class="table table-bordered table-hover fs-4">
+    <thead class="table-dark">
+        <tr>
+            <th class="px-4 py-3">Name</th>
+            <th class="px-4 py-3">Gender</th>
+            <th class="px-4 py-3">Position</th>
+            <th class="px-4 py-3">Age</th>
+            <th class="px-4 py-3">Age Group</th>
+            <th class="px-4 py-3">Jersey #</th>
+            <th class="px-4 py-3 text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for player in players %}
+        <tr>
+            <td class="px-4 py-3">{{ player.name }}</td>
+            <td class="px-4 py-3">{{ player.get_gender_display|default:player.gender }}</td>
+            <td class="px-4 py-3">{{ player.position }}</td>
+            <td class="px-4 py-3">{{ player.age|default:"N/A" }}</td>
+            <td class="px-4 py-3">{{ player.age_category }}</td>
+            <td class="px-4 py-3">{{ player.jersey_number }}</td>
+            <td class="px-4 py-3 text-center">
+                <a href="{% url 'edit_player' player.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
+                <a href="{% url 'delete_player' player.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="text-center text-muted px-4 py-3">No players found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'add_player' %}" 
+    class="btn btn-success rounded-circle shadow-lg d-flex align-items-center justify-content-center"
+    style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; font-size: 28px;">
+    +
+</a>
+
+{% endblock %}  

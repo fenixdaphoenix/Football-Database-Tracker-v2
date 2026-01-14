@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container text-center">
+    <h2 class="mb-3">⚠ Confirm Deletion</h2>
+    <p>Are you sure you want to delete the injury record for 
+        <strong>{{ injury.player.name }}</strong>?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">🗑 Yes, Delete</button>
+        <a href="{% url 'injury_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

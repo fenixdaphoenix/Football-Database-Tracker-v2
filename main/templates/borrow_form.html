@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Borrow Item{% endblock %}
+{% block content %}
+<h2 class="mb-3">Borrow Item</h2>
+<form method="post" class="card p-3">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+
+  {% for field in form.visible_fields %}
+    {% if field.name != "notes" and field.name != "condition_when_issued" %}
+      <div class="mb-3">
+        {{ field.label_tag }}
+        {{ field }}
+        {{ field.errors }}
+        {% if field.help_text %}
+          <div class="form-text text-muted">{{ field.help_text }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endfor %}
+
+  <button class="btn btn-success" type="submit">Borrow</button>
+  <a class="btn btn-secondary" href="{% url 'inventory_list' %}">Cancel</a>
+</form>
+{% endblock %}

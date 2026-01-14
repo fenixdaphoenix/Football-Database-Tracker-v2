@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Events</title>
+</head>
+<body>
+    <h1>All Events</h1>
+    <a href="{% url 'add_event' %}">+ Add New Event</a>
+    <br><br>
+
+    <ul>
+        {% for event in events %}
+            <li>
+                {{ event.date }} {{ event.time }} – {{ event.get_type_display }} at {{ event.location }}
+                <br>
+                {{ event.description }}
+            </li>
+        {% empty %}
+            <li>No events scheduled.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'home' %}">← Back to Home</a>
+</body>
+</html>

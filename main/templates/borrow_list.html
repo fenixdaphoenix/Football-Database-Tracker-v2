@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Borrowed Items{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="mb-0">Borrowed Items</h2>
+  <a href="{% url 'inventory_list' %}" class="btn btn-outline-secondary"> Back to Borrow List</a>
+</div>
+
+<form method="get" class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+  <label class="form-label fw-bold me-2">Filter by Type:</label>
+  <select name="type" class="form-select d-inline-block me-2" style="width:180px;">
+    <option value="">All Types</option>
+    {% for val, label in item_types %}
+      <option value="{{ val }}" {% if type_filter == val %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+
+  <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+  <a href="{% url 'borrow_list' %}" class="btn btn-secondary btn-sm ms-2">Reset</a>
+</form>
+<style>
+  .table th, .table td { vertical-align: middle; }
+</style>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Player</th>
+      <th>Item</th>
+      <th>Qty</th>
+      <th>Issued</th>
+      <th>Returned On</th>
+      <th class="text-center">Returned</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for b in borrows %}
+    <tr>
+      <td>{{ b.player.name }}</td>
+      <td>{{ b.inventory_item.name }}</td>
+      <td>{{ b.quantity }}</td>
+      <td>{{ b.issue_date|date:"Y-m-d" }}</td>
+      <td>
+        {% if b.return_date %}
+          {{ b.return_date|date:"Y-m-d" }}
+        {% else %}
+          &nbsp;
+        {% endif %}
+      </td>
+      <td class="text-center align-middle">
+        {% if b.returned %}
+          ✅(Returned on {{ b.return_date|date:"Y-m-d" }})
+        {% else %}
+          ❌
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6" class="text-center text-muted">No borrow records.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

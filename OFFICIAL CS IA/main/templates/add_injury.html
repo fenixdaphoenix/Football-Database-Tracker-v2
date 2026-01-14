@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Injury</title>
+</head>
+<body>
+    <h1>Add Injury for {{ player.name }}</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Injury</button>
+    </form>
+
+    <br>
+    <a href="{% url 'player_injuries' player.id %}">← Back to Injury List</a>
+</body>
+</html>

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Inventory{% endblock %}
+{% block content %}
+
+<style>
+  .inventory-page .card.page-card {
+    padding: 28px;
+  }
+  .inventory-page .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .inventory-page table {
+    font-size: 1rem; 
+  }
+  .inventory-page .table thead th {
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+  }
+  .inventory-page .btn {
+    font-size: 0.95rem;
+  }
+  .inventory-page .table td, .inventory-page .table th {
+    padding: 0.9rem 0.75rem;
+    vertical-align: middle;
+  }
+</style>
+<h2 class="mb-3">Inventory</h2>
+
+<form method="get" class="mb-3 d-flex align-items-center flex-wrap gap-2">
+  <label class="form-label fw-bold me-2">Filter by Type:</label>
+
+  <select name="type" class="form-select d-inline-block me-2" style="width:180px;">
+    <option value="">All Types</option>
+    {% for val, label in item_types %}
+      <option value="{{ val }}" {% if type_filter == val %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+
+  <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+  <a href="{% url 'inventory_list' %}" class="btn btn-secondary btn-sm ms-2">Reset</a>
+
+  <a href="{% url 'borrow_list' %}{% if type_filter %}?type={{ type_filter }}{% endif %}"
+      class="btn btn-outline-secondary ms-2">📥 View Borrowing History</a>
+</form>
+
+<div class="row g-4">
+  <div class="col-12 col-lg-7">
+    <div class="card page-card h-100">
+      <div class="card-body">
+        <h5 class="card-title">All Inventory</h5>
+        <table class="table table-striped">
+          <thead>
+            <tr><th>Name</th><th>Type</th><th>Available</th><th>Total</th><th>Condition</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+            <tr>
+              <td>{{ item.name }}</td>
+              <td>{{ item.get_item_type_display }}</td>
+              <td>{{ item.available_quantity }}</td>
+              <td>{{ item.total_quantity }}</td>
+              <td>{{ item.get_condition_display }}</td>
+              <td>
+                <a class="btn btn-sm btn-primary" href="{% url 'edit_inventory' item.id %}">Edit</a>
+                <a class="btn btn-sm btn-danger" href="{% url 'delete_inventory' item.id %}">Delete</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-muted">No inventory items.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-5">
+    <div class="card page-card h-100">
+      <div class="card-body">
+        <h5 class="card-title">Currently Borrowed</h5>
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Item</th>
+                <th>Qty</th>
+                <th class="text-center">Return</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for b in borrows %}
+              <tr>
+                <td>{{ b.player.name }}</td>
+                <td>{{ b.inventory_item.name }}</td>
+                <td>{{ b.quantity }}</td>
+                <td class="text-center">
+                  <form method="post" action="{% url 'return_borrow' b.id %}"
+                        onsubmit="return confirm('Mark this item as returned by {{ b.player.name }}?');"
+                        style="display:inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-success">
+                      ✓ Confirm
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center text-muted">No items currently borrowed.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="fab-group" style="position: fixed; right: 40px; bottom: 30px; z-index: 1100; display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
+
+  <a href="{% url 'add_borrow_record' %}"
+      class="btn btn-primary btn-lg rounded-pill shadow-lg d-flex align-items-center justify-content-center"
+      style="padding: 10px 20px; font-size: 16px; min-width: 170px;">
+    <span class="me-2" style="font-size:20px;">📥</span>
+    <span>Borrow Item</span>
+  </a>
+
+  <a href="{% url 'add_inventory' %}" 
+      class="btn btn-success rounded-pill shadow-lg d-flex align-items-center justify-content-center"
+      style="padding: 12px 22px; font-size: 16px; min-width: 170px;">
+      ➕ Add Inventory
+  </a>
+
+</div>
+
+{% endblock %}

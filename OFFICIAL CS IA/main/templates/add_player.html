@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Player</title>
+</head>
+<body>
+    <h1>Add a New Player</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Player</button>
+    </form>
+    <a href="/players/">Back to Player List</a>
+</body>
+</html>

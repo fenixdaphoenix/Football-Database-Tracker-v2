@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Payatas Football Tracker{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Radley', serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(180deg, #9cbbe9, #ffffff);
+        padding-top: 20px;
+    }
+
+    .dashboard-container { max-width: 1100px; margin: 0 auto; }
+
+    .card {
+        border: none;
+        border-radius: 12px;
+        transition: all 0.2s ease-in-out;
+        color: #02265fff;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-title {
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: inherit;
+    }
+
+    .btn-group a { margin-right: 0.5rem; }
+
+    .card.players {
+        background: linear-gradient(180deg, #e7f5ffff,  #e6f5ffff);
+        border: 1px solid rgba(21,128,240,0.08);
+    }
+    .card.equipment {
+        background: linear-gradient(180deg, #e7f5ffff,  #e6f5ffff);
+        border: 1px solid rgba(255,193,7,0.08);
+    }
+    .card.events {
+        background: linear-gradient(180deg, #e7f5ffff,  #e6f5ffff);
+        border: 1px solid rgba(13,110,253,0.08);
+    }
+    .card.injuries {
+        background: linear-gradient(180deg, #e7f5ffff,  #e6f5ffff);
+        border: 1px solid rgba(220,53,69,0.06);
+    }
+    .card.academics {
+        background: linear-gradient(180deg, #e7f5ffff,  #e6f5ffff);
+        border: 1px solid rgba(25,135,84,0.06);
+    }
+
+    .card .text-muted { color: rgba(15,23,36,0.6); }
+
+    @media (max-width: 768px) {
+        .dashboard-container { padding: 0 12px; }
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="dashboard-header text-center mb-4">
+        <h1 style="font-weight:700; color:#4a4dfdff;"> Payatas Football Tracker</h1>
+        <p class="text-muted">Hi! This is for the Payatas Football Org</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 players">
+                <div class="card-body">
+                    <h5 class="card-title">👥 Players</h5>
+                    <p class="text-muted mb-3">Add, view, and manage all registered players in the program.</p>
+                    <div class="btn-group">
+                        <a href="{% url 'add_player' %}" class="btn btn-outline-primary">➕ Add Player</a>
+                        <a href="{% url 'player_list' %}" class="btn btn-outline-secondary">📋 View Players</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 equipment">
+                <div class="card-body">
+                    <h5 class="card-title">📦 Equipment Tracker</h5>
+                    <p class="text-muted mb-3">Monitor and organize football gear, kits, and other materials.</p>
+                    <div class="btn-group">
+                        <a href="{% url 'add_inventory' %}" class="btn btn-outline-primary">➕ Add Equipment</a>
+                        <a href="{% url 'inventory_list' %}" class="btn btn-outline-secondary">📦 View Equipment</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 events">
+                <div class="card-body">
+                    <h5 class="card-title">📅 Event Calendar</h5>
+                    <p class="text-muted mb-3">Plan and keep track of all team games, practices, and tournaments.</p>
+                    <div class="btn-group">
+                        <a href="{% url 'add_event' %}" class="btn btn-outline-primary">➕ Add Event</a>
+                        <a href="{% url 'event_list' %}" class="btn btn-outline-secondary">📅 View Events</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 injuries">
+                <div class="card-body">
+                    <h5 class="card-title">🩹 Injury Records</h5>
+                    <p class="text-muted mb-3">Track injury details, treatments, and recovery times for players.</p>
+                    <div class="btn-group">
+                        <a href="{% url 'add_injury' %}" class="btn btn-outline-primary">➕ Add Injury</a>
+                        <a href="{% url 'injury_list' %}" class="btn btn-outline-secondary">📋 View Injuries</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Academics card centered in its own row at the bottom middle -->
+    <div class="row mt-4">
+        <div class="col-12 col-md-6 offset-md-3">
+            <div class="card shadow-sm h-100 academics">
+                <div class="card-body text-center">
+                    <h5 class="card-title">📘 Academic Tracker</h5>
+                    <p class="text-muted mb-3">Monitor the academic progress and performance of each player.</p>
+                    <div class="btn-group">
+                        <a href="{% url 'add_academic' %}" class="btn btn-outline-primary">➕ Add Record</a>
+                        <a href="{% url 'academic_list' %}" class="btn btn-outline-secondary">📘 View Records</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+  .adv-metrics { max-width:1100px; margin:18px auto 40px; padding:14px; box-sizing:border-box; border-radius:12px; background:#f3f4f6; box-shadow:0 8px 24px rgba(12,20,40,0.04); }
+  .adv-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; align-items:start; }
+  .adv-card { padding:12px; border-radius:10px; background:transparent; min-height:220px; display:flex; flex-direction:column; justify-content:center; align-items:center; }
+  .adv-card h6 { width:100%; text-align:left; margin:0 0 8px 6px; font-weight:700; font-size:0.95rem; }
+  .small-legend { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:8px; color:#6b7280; }
+  canvas.adv { width:100%; max-width:220px; aspect-ratio:1/1; display:block; }
+  @media (max-width: 992px) { .adv-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .adv-grid { grid-template-columns: 1fr; } }
+  .events-list { list-style:none; padding:0; margin:0; width:100%; }
+  .events-list li { padding:8px 10px; border-radius:6px; background:#fbfbfb; margin-bottom:8px; width:100%; }
+</style>
+
+
+<div class="adv-metrics">
+  <h4 class="mb-3">Advanced Metrics</h4>
+
+  <!-- top row: player distribution donuts -->
+  <div class="adv-grid mb-3">
+    <div class="adv-card">
+      <h6>Positions</h6>
+      <canvas id="positionsChart" class="adv" aria-label="Player positions distribution"></canvas>
+      <div id="positionsLegend" class="small-legend"></div>
+    </div>
+
+    <div class="adv-card">
+      <h6>Age Groups</h6>
+      <canvas id="agesChart" class="adv" aria-label="Player age groups"></canvas>
+      <div id="agesLegend" class="small-legend"></div>
+    </div>
+
+    <div class="adv-card">
+      <h6>Genders</h6>
+      <canvas id="gendersChart" class="adv" aria-label="Player genders"></canvas>
+      <div id="gendersLegend" class="small-legend"></div>
+    </div>
+  </div>
+
+  <!-- middle row: upcoming events and injury charts -->
+  <div class="adv-grid mb-3" style="grid-template-columns: 1fr;">
+    <div class="adv-card" style="align-items:flex-start; width:100%;">
+      <h6>Upcoming Events (Next 7 days)</h6>
+      {% if upcoming_week_events %}
+        <ul class="events-list">
+          {% for ev in upcoming_week_events %}
+            <li>
+              <strong>{{ ev.title }}</strong><br>
+              <small class="text-muted">{{ ev.date }}{% if ev.time %} • {{ ev.time }}{% endif %}{% if ev.location %} — {{ ev.location }}{% endif %}</small>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="no-data">No upcoming events in the next week.</div>
+      {% endif %}
+    </div>
+  </div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function(){
+  const palette = ['#4a4dfd','#ef4444','#10b981','#f59e0b','#8b5cf6','#06b6d4','#fb7185','#60a5fa','#a3e635'];
+
+  // build legend nodes
+  function buildLegend(containerId, labels, colors) {
+    const c = document.getElementById(containerId);
+    if(!c) return;
+    c.innerHTML = '';
+    labels.forEach((l,i)=>{
+      const span = document.createElement('span');
+      span.style.display='inline-flex';
+      span.style.alignItems='center';
+      span.style.gap='6px';
+      span.style.marginRight='8px';
+      span.innerHTML = '<i style="width:12px;height:12px;background:'+ (colors[i]||'#ddd') +';display:inline-block;border-radius:3px"></i> '+l;
+      c.appendChild(span);
+    });
+  }
+
+  // Positions
+  const posLabels = [{% for lab in position_labels %}"{{ lab|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+  const posData = [{% for n in position_data %}{{ n }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+  if(posLabels.length && posData.length){
+    const canvas = document.getElementById('positionsChart');
+    if(canvas){
+      const colors = posData.map((_,i)=>palette[i%palette.length]);
+      new Chart(canvas.getContext('2d'), { type:'doughnut', data:{ labels:posLabels, datasets:[{ data:posData, backgroundColor:colors, borderWidth:0 }] }, 
+      options:{ responsive:true, maintainAspectRatio:true, cutout:'60%', plugins:{legend:{display:false}} } });
+      buildLegend('positionsLegend', posLabels, posData.map((_,i)=>palette[i%palette.length]));
+    }
+  }
+
+  // Ages
+  const ageLabels = [{% for lab in age_labels %}"{{ lab|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+  const ageData = [{% for n in age_data %}{{ n }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+  if(ageLabels.length && ageData.length){
+    const canvas = document.getElementById('agesChart');
+    if(canvas){
+      const colors = ageData.map((_,i)=>palette[i%palette.length]);
+      new Chart(canvas.getContext('2d'), { type:'doughnut', data:{ labels:ageLabels, datasets:[{ data:ageData, backgroundColor:colors, borderWidth:0 }] }, 
+      options:{ responsive:true, maintainAspectRatio:true, cutout:'60%', plugins:{legend:{display:false}} } });
+      buildLegend('agesLegend', ageLabels, colors);
+    }
+  }
+
+  // Genders
+  const genderLabels = [{% for lab in gender_labels %}"{{ lab|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+  const genderData = [{% for n in gender_data %}{{ n }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+  if(genderLabels.length && genderData.length){
+    const canvas = document.getElementById('gendersChart');
+    if(canvas){
+      const colors = genderData.map((_,i)=>palette[i%palette.length]);
+      new Chart(canvas.getContext('2d'), { type:'doughnut', data:{ labels:genderLabels, datasets:[{ data:genderData, backgroundColor:colors, borderWidth:0 }] }, 
+      options:{ responsive:true, maintainAspectRatio:true, cutout:'60%', plugins:{legend:{display:false}} } });
+      buildLegend('gendersLegend', genderLabels, colors);
+    }
+  }
+
+  // Injury duration (reuse variables from injury view)
+  const longCount = Number({{ long_injuries|default:0 }});
+  const shortCount = Number({{ short_injuries|default:0 }});
+  const injDurEl = document.getElementById('injuryDurationChart');
+  if(injDurEl && (longCount+shortCount)>0){
+    new Chart(injDurEl.getContext('2d'), { type:'doughnut', data:{ labels:['Long-term','Short-term'], datasets:[{ data:[longCount, shortCount], 
+      backgroundColor:[palette[1],palette[2]], borderWidth:0 }] }, options:{ responsive:true, maintainAspectRatio:true, cutout:'65%', plugins:{legend:{display:false}} } });
+  }
+
+  // Injury types
+    const injTypeLabels = [{% for label,count in injury_type_pairs %}"{{ label|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+    const injTypeData = [{% for label,count in injury_type_pairs %}{{ count }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+    const injTypeEl = document.getElementById('injuryTypeChart');
+    if(injTypeEl && injTypeLabels.length){
+    const colors = injTypeData.map((_,i)=>palette[i%palette.length]);
+    new Chart(injTypeEl.getContext('2d'), { type:'doughnut', data:{ labels:injTypeLabels, datasets:[{ data:injTypeData, backgroundColor:colors, borderWidth:0 }] }, 
+    options:{ responsive:true, maintainAspectRatio:true, cutout:'55%', plugins:{legend:{display:false}} } });
+    const typesLegend = document.getElementById('typesLegend');
+    if(typesLegend){
+        buildLegend('typesLegend', injTypeLabels, colors);
+    }
+    }
+
+})();
+</script>
+
+
+{% endblock %}

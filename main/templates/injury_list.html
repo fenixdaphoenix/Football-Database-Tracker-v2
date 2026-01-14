@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  .injury-page {
+    width: 100%;
+    max-width: none;    /* remove centering constraint */
+    margin: 0;          /* remove auto centering */
+    padding: 8px 12px;  /* small inner padding */
+    box-sizing: border-box;
+  }
+
+  .card-list { display:flex; flex-direction:column; gap:12px; }
+  /* reduced padding so text sits closer to card border (closer to player_list spacing) */
+  .injury-card {
+    border-radius:8px;
+    background:#fff;
+    box-shadow:0 10px 18px rgba(0,0,0,0.06);
+    padding:8px 12px; /* smaller padding */
+    overflow:hidden;
+  }
+  .injury-card h2 { margin:0 0 6px 0; font-size:1rem; }
+  .injury-card .text-muted.small { margin:2px 0 6px 0; font-size:0.88rem; }
+
+  .stats-panel h5 { text-align: right; padding-right: 10px; margin-bottom: 8px; }
+  .no-data { min-height: 220px; display:flex; align-items:center; justify-content:center; color: #6b7280; font-weight:500; }
+
+  .stats-panel { background:#fff; border-radius:12px; padding:1px; box-shadow:0 10px 18px rgba(0,0,0,0.06); }
+  #durationChart, #typesChart { width:100% ; max-width:320px; height:260px !important; display:block; margin:0 auto; }
+  .legend { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:8px; }
+  .legend .item{ display:flex; gap:8px; align-items:center; color:#444; }
+  .swatch{ width:14px; height:14px; border-radius:3px; display:inline-block; background:#ddd; }
+
+  @media (min-width: 992px) {
+    .split { display:grid; grid-template-columns: 2fr 1fr; gap:18px; align-items:start; }
+  }
+  @media (max-width: 991px) {
+    .split { display:flex; flex-direction:column; gap:14px; }
+  }
+
+  /* Actions alignment similar to player list buttons */
+  .injury-card .text-end { min-width:80px; display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
+  .injury-card .text-end .btn { padding:.25rem .5rem; font-size:.82rem; }
+</style>
+
+  <h2 class="mb-3">Injury Records</h2>
+
+  <form method="get" class="mb-3 d-flex gap-2 align-items-center flex-wrap" action="{% url 'injury_list' %}">
+    <label class="form-label fw-bold me-2">Filter by Type:</label>
+    <select name="injury_type" class="form-select d-inline-block" style="width:220px;">
+      <option value="">All Types</option>
+      {% for val,label in injury_types %}
+        <option value="{{ val }}" {% if injury_filter == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+
+    <button class="btn btn-primary btn-sm" type="submit">Apply</button>
+    <a href="{% url 'injury_list' %}" class="btn btn-secondary btn-sm ms-2">Reset</a>
+  </form>
+
+  <div class="split">
+    <!-- LEFT: injury list -->
+    <div class="injury-left">
+      <div class="card-list">
+        {% for injury in injuries %}
+          <div class="injury-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div style="min-width:0;">
+                <h5>{% if injury.player %}{{ injury.player.name }}{% else %}Unknown{% endif %}</h5>
+                <div class="text-muted small">
+                  <strong>Date:</strong> {{ injury.date_of_injury|default:"—" }} &nbsp; • &nbsp;
+                  <strong>Type:</strong>
+                  {% if injury.get_injury_type_display %}
+                    {{ injury.get_injury_type_display }}
+                  {% else %}
+                    {{ injury.injury_type|default:"Unknown" }}
+                  {% endif %}
+                  &nbsp; • &nbsp;
+                  <strong>Duration:</strong>
+                  {% if injury.get_duration_type_display %}
+                    {{ injury.get_duration_type_display }}
+                  {% else %}
+                    {{ injury.duration_type|default:"—" }}
+                  {% endif %}
+                </div>
+
+                <div style="margin-top:6px;">
+                  <strong>Treatment:</strong><br>
+                  {{ injury.injury_treatment|linebreaks }}
+                  {% if injury.recovery_date %}
+                    <br><strong>Expected Recovery:</strong> {{ injury.recovery_date }}
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="text-end">
+                <a href="{% url 'edit_injury' injury.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
+                <a href="{% url 'delete_injury' injury.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <p class="text-center text-muted">No injury records available.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- RIGHT: stats + charts -->
+    <div class="injury-right">
+    <!-- RIGHT: stats + charts -->
+    <div class="stats-panel mb-3">
+      <h5 class="mb-2">Duration: Long vs Short</h5>
+
+      {% if long_injuries|default:0 == 0 and short_injuries|default:0 == 0 %}
+        <div class="no-data">No information available</div>
+      {% else %}
+        <canvas id="durationChart" aria-label="Long vs short injuries"></canvas>
+        <div class="legend" id="durationLegend">
+          <div class="item"><span class="swatch" data-swatch-index="0"></span> Long-term <strong class="ms-1">{{ long_injuries|default:0 }}</strong></div>
+          <div class="item"><span class="swatch" data-swatch-index="1"></span> Short-term <strong class="ms-1">{{ short_injuries|default:0 }}</strong></div>
+          <div class="item"><span class="swatch" data-swatch-index="2"></span> Total <strong class="ms-1">{{ total_injuries|default:0 }}</strong></div>
+        </div>
+      {% endif %}
+    </div>
+
+
+      <div class="stats-panel">
+      <h5 class="mb-2">By Injury Type</h5>
+
+      {% if injury_type_pairs|length == 0 %}
+        <div class="no-data">No information available</div>
+      {% else %}
+        <canvas id="typesChart" aria-label="Counts per injury type"></canvas>
+        <div class="legend" id="typesLegend" style="justify-content:flex-start; margin-top:10px; flex-direction:column;">
+          {% for label,count in injury_type_pairs %}
+            <div class="item"><span class="swatch" data-type-index="{{ forloop.counter0 }}"></span> {{ label }} <strong class="ms-1">{{ count }}</strong></div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- floating add button -->
+  <a href="{% url 'add_injury' %}" class="btn btn-success rounded-circle shadow-lg d-flex align-items-center justify-content-center"
+     style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; font-size: 28px;">+
+  </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function(){
+  const longCount = Number({{ long_injuries|default:0 }});
+  const shortCount = Number({{ short_injuries|default:0 }});
+  const typeLabels = [{% for label,count in injury_type_pairs %}"{{ label|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+  const typeData = [{% for label,count in injury_type_pairs %}{{ count }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+
+  const palette = ['#4a4dfd','#ef4444','#10b981','#f59e0b','#8b5cf6','#06b6d4','#fb7185','#60a5fa','#a3e635'];
+
+  // Duration doughnut
+  const durEl = document.getElementById('durationChart');
+  if (durEl) {
+    const durColors = [palette[1], palette[2]];
+    new Chart(durEl.getContext('2d'), {
+      type: 'doughnut',
+      data: { labels: ['Long-term','Short-term'], datasets: [{ data: [longCount, shortCount], backgroundColor: durColors, borderWidth: 0 }] },
+      options: { responsive: true, maintainAspectRatio: true, cutout: '65%', plugins: { legend: { display: false } } }
+    });
+    const durationSwatches = document.querySelectorAll('#durationLegend .swatch');
+    durationSwatches.forEach((el, i) => { el.style.background = [durColors[0], durColors[1], '#6b7280'][i] || '#ddd'; });
+  }
+
+  // Types doughnut
+  const typesEl = document.getElementById('typesChart');
+  if (typesEl) {
+    const bgColors = typeData.map((_, i) => palette[i % palette.length]);
+    new Chart(typesEl.getContext('2d'), {
+      type: 'doughnut',
+      data: { labels: typeLabels, datasets: [{ data: typeData, backgroundColor: bgColors, borderWidth: 0 }] },
+      options: {
+        responsive: true, maintainAspectRatio: true, cutout: '55%',
+        plugins: { legend: { display: false },
+          tooltip: { callbacks: { label: function(ctx){ const v = ctx.parsed || 0; 
+            const tot = typeData.reduce((a,b)=>a+b,0)||1; return ctx.label + ': ' + v + ' (' + (v/tot*100).toFixed(0) + '%)'; } } }
+        }
+      }
+    });
+    const typeSwatches = document.querySelectorAll('#typesLegend .swatch');
+    typeSwatches.forEach((el, i) => { el.style.background = bgColors[i] || '#ddd'; });
+  }
+})();
+</script>
+{% endblock %}

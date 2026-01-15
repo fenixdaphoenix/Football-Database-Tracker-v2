@@ -77,7 +77,6 @@
                 </td>
                 <td class="px-4 py-3 text-center">
                     <a href="{% url 'edit_academic' record.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
-                    <a href="{% url 'delete_academic' record.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
                 </td>
             </tr>
         {% empty %}
@@ -88,10 +87,5 @@
     </tbody>
 </table>
 
-<a href="{% url 'add_academic' %}" 
-    class="btn btn-success rounded-circle shadow-lg d-flex align-items-center justify-content-center"
-    style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; font-size: 28px;">
-    +
-</a>
 
 {% endblock %}

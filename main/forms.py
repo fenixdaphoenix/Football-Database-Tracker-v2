@@ -123,7 +123,7 @@ class AcademicRecordForm(forms.ModelForm):
 class InventoryItemForm(forms.ModelForm):
     class Meta:
         model = InventoryItem
-        fields = ['name', 'item_type', 'total_quantity', 'available_quantity', 'condition', 'notes']
+        fields = ['name', 'item_type', 'total_quantity', 'condition', 'notes']
         widgets = {
             'notes': forms.Textarea(attrs={'rows': 3}),
         }

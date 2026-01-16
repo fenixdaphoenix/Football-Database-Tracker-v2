@@ -26,6 +26,9 @@ class PlayerForm(forms.ModelForm):
             'birth_date': forms.SelectDateWidget(years=range(2005, date.today().year + 1)),  # Adjust years as needed
             'initial_year': forms.Select(choices=[(y, y) for y in range(2009, date.today().year + 1)]),
         }
+        labels = {
+            'initial_year': 'Initial year of participation',
+        }
 #_______________________________________________________
 
 class InjuryForm(forms.ModelForm):
@@ -34,7 +37,7 @@ class InjuryForm(forms.ModelForm):
         fields = ['player', 'date_of_injury', 'duration_type', 'injury_type', 'injury_treatment']
         widgets = {
             'date_of_injury': forms.SelectDateWidget(
-                years=range(2024, date.today().year + 1),
+                years=range(2026, 2027),
                 empty_label=("Year", "Month", "Day")
             ),
             'recovery_date': forms.SelectDateWidget(
@@ -58,17 +61,18 @@ class EventForm(forms.ModelForm):
         input_formats=['%H:%M'],  
         widget=forms.TimeInput(format='%H:%M', attrs={
             'class': 'form-control',
-            'placeholder': '24-hour, e.g. 14:30',
+            'placeholder': 'HH:MM',
+            'style': 'width: 100px;',
             'aria-label': 'Event time (HH:MM)'
         }),
-        help_text='Enter time in 24-hour format (HH:MM), e.g. 14:30.'
+        help_text='24-hour format (HH:MM)'
     )
 
     class Meta:
         model = Event
         fields = ['title', 'type', 'date', 'time', 'location', 'description']  
         widgets = {
-            'date': forms.SelectDateWidget(years=range(2024, 2031)),
+            'date': forms.SelectDateWidget(years=range(2026, 2031)),
             'description': forms.Textarea(attrs={'rows': 3}),
         }
 

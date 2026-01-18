@@ -16,11 +16,13 @@
     <p class="text-center text-muted">No contacts available.</p>
     {% endfor %}
 
+{% if user.is_staff %}
 <a href="{% url 'add_contact' %}" 
     class="btn btn-success rounded-circle shadow-lg d-flex align-items-center justify-content-center"
     style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; font-size: 28px;">
     +
 </a>
+{% endif %}
 
 </div>
 

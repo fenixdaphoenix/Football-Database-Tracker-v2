@@ -93,8 +93,10 @@
               </div>
 
               <div class="text-end">
-                <a href="{% url 'edit_injury' injury.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
-                <a href="{% url 'delete_injury' injury.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
+                {% if user.is_staff %}
+                    <a href="{% url 'edit_injury' injury.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
+                    <a href="{% url 'delete_injury' injury.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -140,9 +142,11 @@
   </div>
 
   <!-- floating add button -->
+  {% if user.is_staff %}
   <a href="{% url 'add_injury' %}" class="btn btn-success rounded-circle shadow-lg d-flex align-items-center justify-content-center"
      style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; font-size: 28px;">+
   </a>
+  {% endif %}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -41,8 +41,10 @@
       <td class="px-4 py-3">{{ event.location }}</td>
       <td class="px-4 py-3">{{ event.description }}</td>
       <td class="px-4 py-3 text-center">
-        <a href="{% url 'edit_event' event.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
-        <a href="{% url 'delete_event' event.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
+        {% if user.is_staff %}
+            <a href="{% url 'edit_event' event.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
+            <a href="{% url 'delete_event' event.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
+        {% endif %}
       </td>
     </tr>
     {% empty %}
@@ -53,10 +55,12 @@
   </tbody>
 </table>
 
+{% if user.is_staff %}
 <a href="{% url 'add_event' %}" 
     class="btn btn-success rounded-circle shadow-lg d-flex align-items-center justify-content-center"
     style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; font-size: 28px;">
     +
 </a>
+{% endif %}
 
 {% endblock %}

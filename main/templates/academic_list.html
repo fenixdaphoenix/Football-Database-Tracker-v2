@@ -76,7 +76,9 @@
                     {% endif %}
                 </td>
                 <td class="px-4 py-3 text-center">
-                    <a href="{% url 'edit_academic' record.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
+                    {% if user.is_staff %}
+                        <a href="{% url 'edit_academic' record.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
+                    {% endif %}
                 </td>
             </tr>
         {% empty %}

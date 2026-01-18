@@ -62,8 +62,10 @@
               <td>{{ item.total_quantity }}</td>
               <td>{{ item.get_condition_display }}</td>
               <td>
-                <a class="btn btn-sm btn-primary" href="{% url 'edit_inventory' item.id %}">Edit</a>
-                <a class="btn btn-sm btn-danger" href="{% url 'delete_inventory' item.id %}">Delete</a>
+                {% if user.is_staff %}
+                    <a class="btn btn-sm btn-primary" href="{% url 'edit_inventory' item.id %}">Edit</a>
+                    <a class="btn btn-sm btn-danger" href="{% url 'delete_inventory' item.id %}">Delete</a>
+                {% endif %}
               </td>
             </tr>
             {% empty %}
@@ -118,6 +120,7 @@
 
 <div class="fab-group" style="position: fixed; right: 40px; bottom: 30px; z-index: 1100; display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
 
+  {% if user.is_staff %}
   <a href="{% url 'add_borrow_record' %}"
       class="btn btn-primary btn-lg rounded-pill shadow-lg d-flex align-items-center justify-content-center"
       style="padding: 10px 20px; font-size: 16px; min-width: 170px;">
@@ -130,6 +133,7 @@
       style="padding: 12px 22px; font-size: 16px; min-width: 170px;">
       ➕ Add Inventory
   </a>
+  {% endif %}
 
 </div>
 

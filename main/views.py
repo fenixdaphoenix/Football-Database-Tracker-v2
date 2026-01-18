@@ -60,6 +60,9 @@ def calculate_age(birth_date):
     return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
 
 #__________________________________________________________________________
+#__________________________________________________________________________
+
+@login_required
 def home(request):
     # players distribution
     players = Player.objects.all()
@@ -178,6 +181,8 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
+
+@login_required
 def player_list(request):
     players_qs = Player.objects.all()
     position_filter = request.GET.get("position")
@@ -217,6 +222,7 @@ def player_list(request):
 
 #__________________________________________________________________________
 
+@user_passes_test(lambda u: u.is_staff)
 def add_player(request):
     if request.method == 'POST':
         form = PlayerForm(request.POST)
@@ -236,6 +242,7 @@ def add_player(request):
     return render(request, 'add_player.html', {'form': form})
 #__________________________________________________________________________
 
+@user_passes_test(lambda u: u.is_staff)
 def edit_player(request, player_id):
     player = get_object_or_404(Player, id=player_id)
     if request.method == 'POST':
@@ -247,6 +254,7 @@ def edit_player(request, player_id):
         form = PlayerForm(instance=player)
     return render(request, 'edit_player.html', {'form': form})
 
+@user_passes_test(lambda u: u.is_staff)
 def delete_player(request, player_id):
     player = get_object_or_404(Player, id=player_id)
     if request.method == 'POST':
@@ -256,6 +264,10 @@ def delete_player(request, player_id):
 
 #__________________________________________________________________________
 
+
+#__________________________________________________________________________
+
+@login_required
 def injury_list(request):
     injury_filter = request.GET.get('injury_type', '').strip()
     injuries = InjuryRecord.objects.select_related('player').all()
@@ -325,6 +337,7 @@ def injury_list(request):
         'injury_type_data': injury_type_data,
     })
 
+@user_passes_test(lambda u: u.is_staff)
 def add_injury(request):
     if request.method == "POST":
         form = InjuryForm(request.POST)
@@ -336,6 +349,7 @@ def add_injury(request):
     return render(request, 'add_injury.html', {'form': form})
 
 
+@user_passes_test(lambda u: u.is_staff)
 def edit_injury(request, pk):
     injury = get_object_or_404(InjuryRecord, pk=pk)
     if request.method == "POST":
@@ -348,6 +362,7 @@ def edit_injury(request, pk):
     return render(request, 'edit_injury.html', {'form': form, 'injury': injury})
 
 
+@user_passes_test(lambda u: u.is_staff)
 def delete_injury(request, pk):
     injury = get_object_or_404(InjuryRecord, pk=pk)
     if request.method == "POST":
@@ -362,6 +377,10 @@ def player_injuries(request, player_id):
 
 #_________________________________________________________________________
 
+
+#_________________________________________________________________________
+
+@login_required
 def event_list(request):
     type_filter = request.GET.get('type', '').strip()
 
@@ -378,6 +397,7 @@ def event_list(request):
         'event_types': event_types,
         'type_filter': type_filter,
     })
+@user_passes_test(lambda u: u.is_staff)
 def add_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
@@ -391,6 +411,7 @@ def add_event(request):
         form = EventForm()
     return render(request, 'add_event.html', {'form': form})
 
+@user_passes_test(lambda u: u.is_staff)
 def edit_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if request.method == 'POST':
@@ -402,6 +423,7 @@ def edit_event(request, event_id):
         form = EventForm(instance=event)
     return render(request, 'add_event.html', {'form': form, 'event': event})
 
+@user_passes_test(lambda u: u.is_staff)
 def delete_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if request.method == 'POST':
@@ -420,6 +442,8 @@ def _normalize_school_name(s):
     s = re.sub(r'\s+', ' ', s)
     return s
 
+
+@login_required
 def academic_list(request):
     qs = AcademicRecord.objects.select_related('player').order_by('player__name')
 
@@ -453,6 +477,7 @@ def academic_list(request):
         'grade_levels': grade_levels,
     })
     
+@user_passes_test(lambda u: u.is_staff)
 def add_academic(request):
     if request.method == "POST":
         form = AcademicRecordForm(request.POST)
@@ -464,6 +489,7 @@ def add_academic(request):
     return render(request, 'add_academic.html', {'form': form})
 
 
+@user_passes_test(lambda u: u.is_staff)
 def edit_academic(request, record_id):
     record = get_object_or_404(AcademicRecord, id=record_id)
     if request.method == 'POST':
@@ -477,6 +503,7 @@ def edit_academic(request, record_id):
         form = AcademicRecordForm(instance=record)
     return render(request, 'edit_academic.html', {'form': form, 'record': record})
 
+@user_passes_test(lambda u: u.is_staff)
 def delete_academic(request, pk):
     record = get_object_or_404(AcademicRecord, pk=pk)
     if request.method == "POST":
@@ -485,6 +512,9 @@ def delete_academic(request, pk):
     return render(request, 'delete_academic.html', {'record': record})
 
 #__________________________________________________________________________
+#__________________________________________________________________________
+
+@login_required
 def inventory_list(request):
 
     type_filter = request.GET.get('type', '').strip()
@@ -505,6 +535,7 @@ def inventory_list(request):
         'type_filter': type_filter,
     })
 
+@user_passes_test(lambda u: u.is_staff)
 def inventory_form(request, item_id=None):
     item = None
     if item_id:
@@ -520,6 +551,7 @@ def inventory_form(request, item_id=None):
         form = InventoryItemForm(instance=item)
     return render(request, 'inventory_form.html', {'form': form, 'item': item})
 
+@user_passes_test(lambda u: u.is_staff)
 def inventory_delete(request, item_id):
     item = get_object_or_404(InventoryItem, id=item_id)
     if request.method == 'POST':
@@ -527,6 +559,7 @@ def inventory_delete(request, item_id):
         return redirect('inventory_list')
     return render(request, 'delete_inventory.html', {'item': item})
 
+@user_passes_test(lambda u: u.is_staff)
 def borrow_form(request):
     initial = {}
     item_q = request.GET.get('item')
@@ -548,6 +581,8 @@ def borrow_form(request):
         form = BorrowRecordForm(initial=initial)
     return render(request, 'borrow_form.html', {'form': form})
 
+
+@login_required
 def borrow_list(request):
     type_filter = request.GET.get('type', '').strip()
     borrows = BorrowRecord.objects.select_related('inventory_item', 'player').order_by('-created_at')
@@ -561,6 +596,7 @@ def borrow_list(request):
         'type_filter': type_filter,
     })
 
+@user_passes_test(lambda u: u.is_staff)
 def borrow_return(request, borrow_id):
     borrow = get_object_or_404(BorrowRecord, id=borrow_id)
     if request.method == 'POST':
@@ -604,10 +640,16 @@ def return_borrow(request, borrow_id):
 #__________________________________________________________________________
 
 
+
+
+#__________________________________________________________________________
+
+@login_required
 def contact_info(request):
     contacts = Contact.objects.all()
     return render(request, "contact_info.html", {"contacts": contacts})
 
+@user_passes_test(lambda u: u.is_staff)
 def add_contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)

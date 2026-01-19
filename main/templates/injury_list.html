@@ -94,8 +94,8 @@
 
               <div class="text-end">
                 {% if user.is_staff %}
-                    <a href="{% url 'edit_injury' injury.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
-                    <a href="{% url 'delete_injury' injury.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
+                    <a href="{% url 'edit_injury' injury.id %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'delete_injury' injury.id %}" class="btn btn-danger btn-sm">Delete</a>
                 {% endif %}
               </div>
             </div>

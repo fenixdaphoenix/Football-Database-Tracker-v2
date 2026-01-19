@@ -5,15 +5,15 @@
 {% block content %}
 <div class="d-flex justify-content-center mt-5">
     <div class="card shadow-sm p-4" style="max-width: 450px; width: 100%;">
-        <h2 class="text-danger text-center mb-4">⚠️ Confirm Delete</h2>
+        <h2 class="text-danger text-center mb-4">Confirm Delete</h2>
         <p class="text-center">
             Are you sure you want to delete 
             <strong>{{ contact.name }}</strong>?
         </p>
         <form method="POST" class="text-center mt-4">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger me-2">✅ Yes, Delete</button>
-            <a href="{% url 'contact_info' %}" class="btn btn-secondary">❌ Cancel</a>
+            <button type="submit" class="btn btn-danger me-2">Yes, Delete</button>
+            <a href="{% url 'contact_info' %}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </div>

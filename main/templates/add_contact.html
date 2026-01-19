@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
-    <h2 class="mb-4">➕ Add New Member</h2>
+    <h2 class="mb-4">Add New Member</h2>
     <div class="card shadow-sm">
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" class="btn btn-success">💾 Save</button>
+                <button type="submit" class="btn btn-success">Save</button>
                 <a href="{% url 'contact_info' %}" class="btn btn-secondary">Cancel</a>
             </form>
         </div>

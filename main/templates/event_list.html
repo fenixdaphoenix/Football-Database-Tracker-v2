@@ -2,7 +2,7 @@
 {% block title %}Events{% endblock %}
 
 {% block content %}
-<h1 class="text-center mb-4">📅 Event List</h1>
+<h1 class="text-center mb-4">Event List</h1>
 
 <div class="mb-4 text-center">
     <form method="get" class="d-inline-block">
@@ -42,8 +42,8 @@
       <td class="px-4 py-3">{{ event.description }}</td>
       <td class="px-4 py-3 text-center">
         {% if user.is_staff %}
-            <a href="{% url 'edit_event' event.id %}" class="btn btn-warning btn-sm">✏ Edit</a>
-            <a href="{% url 'delete_event' event.id %}" class="btn btn-danger btn-sm">🗑 Delete</a>
+            <a href="{% url 'edit_event' event.id %}" class="btn btn-warning btn-sm">Edit</a>
+            <a href="{% url 'delete_event' event.id %}" class="btn btn-danger btn-sm">Delete</a>
         {% endif %}
       </td>
     </tr>

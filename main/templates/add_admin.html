@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container" style="max-width:480px;">
   <div class="card p-4 shadow-sm mt-4">
-    <h3 class="mb-3 text-center">➕ Create Admin</h3>
+    <h3 class="mb-3 text-center">Create Admin</h3>
     <form method="post">
       {% csrf_token %}
       {{ form.as_p }}

@@ -3,34 +3,89 @@
 {% block content %}
 
 <style>
-  html { overflow-y: scroll; }
-  .inventory-page .card.page-card {
+  html { 
+    overflow-y: scroll;
+    overflow-anchor: none;
+  }
+  
+  /* Grid container - FIXED HEIGHT, no reflow */
+  .inventory-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+    height: 750px;
+  }
+
+  /* Card structure - flex layout, fixed height */
+  .inventory-left,
+  .inventory-right {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .inventory-left .card,
+  .inventory-right .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     padding: 28px;
   }
-  .inventory-page .card-title {
+
+  /* Titles don't shrink */
+  .inventory-left .card-title,
+  .inventory-right .card-title {
     font-size: 1.25rem;
     font-weight: 600;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
   }
-  .inventory-page table {
-    font-size: 1rem; 
+
+  /* Only table area scrolls, not entire card */
+  .inventory-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
   }
-  .inventory-page .table thead th {
+
+  /* Table styling */
+  .inventory-row table {
+    font-size: 1rem;
+    margin-bottom: 0;
+  }
+
+  .inventory-row table thead th {
     font-size: 0.95rem;
     letter-spacing: 0.02em;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
   }
-  .inventory-page .btn {
-    font-size: 0.95rem;
-  }
-  .inventory-page .table td, .inventory-page .table th {
+
+  .inventory-row table td,
+  .inventory-row table th {
     padding: 0.9rem 0.75rem;
     vertical-align: middle;
   }
-  .table-responsive {
-    max-height: 600px;
-    overflow-y: auto;
+
+  .inventory-row .btn {
+    font-size: 0.95rem;
   }
-  .row.g-4 {
-    margin-top: 0;
+
+  /* Responsive */
+  @media (max-width: 991px) {
+    .inventory-row {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+
+    .inventory-left .card,
+    .inventory-right .card {
+      height: 400px;
+    }
   }
 </style>
 <h2 class="mb-3">Inventory</h2>
@@ -52,14 +107,24 @@
       class="btn btn-outline-secondary ms-2">View Borrowing History</a>
 </form>
 
-<div class="row g-4">
-  <div class="col-12 col-lg-7">
-    <div class="card page-card h-100">
-      <div class="card-body">
-        <h5 class="card-title">All Inventory</h5>
+<!-- FIXED HEIGHT GRID -->
+<div class="inventory-row">
+  
+  <!-- LEFT: ALL INVENTORY -->
+  <div class="inventory-left">
+    <div class="card">
+      <h5 class="card-title">All Inventory</h5>
+      <div class="inventory-content">
         <table class="table table-striped">
           <thead>
-            <tr><th>Name</th><th>Type</th><th>Available</th><th>Total</th><th>Condition</th><th>Actions</th></tr>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Available</th>
+              <th>Total</th>
+              <th>Condition</th>
+              <th>Actions</th>
+            </tr>
           </thead>
           <tbody>
             {% for item in items %}
@@ -85,46 +150,47 @@
     </div>
   </div>
 
-  <div class="col-12 col-lg-5">
-    <div class="card page-card h-100">
-      <div class="card-body">
-        <h5 class="card-title">Currently Borrowed</h5>
-        <div class="table-responsive">
-          <table class="table table-sm">
-            <thead>
-              <tr>
-                <th>Player</th>
-                <th>Item</th>
-                <th>Qty</th>
-                <th class="text-center">Return</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for b in borrows %}
-              <tr>
-                <td>{{ b.player.name }}</td>
-                <td>{{ b.inventory_item.name }}</td>
-                <td>{{ b.quantity }}</td>
-                <td class="text-center">
-                  <form method="post" action="{% url 'return_borrow' b.id %}"
-                        onsubmit="return confirm('Mark this item as returned by {{ b.player.name }}?');"
-                        style="display:inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-success">
-                      ✓ Confirm
-                    </button>
-                  </form>
-                </td>
-              </tr>
-              {% empty %}
-              <tr><td colspan="4" class="text-center text-muted">No items currently borrowed.</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+  <!-- RIGHT: CURRENTLY BORROWED -->
+  <div class="inventory-right">
+    <div class="card">
+      <h5 class="card-title">Currently Borrowed</h5>
+      <div class="inventory-content">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Item</th>
+              <th>Qty</th>
+              <th class="text-center">Return</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in borrows %}
+            <tr>
+              <td>{{ b.player.name }}</td>
+              <td>{{ b.inventory_item.name }}</td>
+              <td>{{ b.quantity }}</td>
+              <td class="text-center">
+                <form method="post" action="{% url 'return_borrow' b.id %}"
+                      onsubmit="return confirm('Mark this item as returned by {{ b.player.name }}?');"
+                      style="display:inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-success">
+                    Confirm
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-center text-muted">No items currently borrowed.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
+
+</div>
 
 <div class="fab-group" style="position: fixed; right: 40px; bottom: 30px; z-index: 1100; display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
 

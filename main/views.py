@@ -589,7 +589,6 @@ def borrow_form(request):
             borrow = form.save(commit=False)
             if borrow.inventory_item.borrow(borrow.quantity):
                 borrow.save()
-                messages.success(request, "Item borrowed successfully!")
                 return redirect('inventory_list')
             else:
                 form.add_error('quantity', 'Not enough available quantity')

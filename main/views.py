@@ -574,6 +574,7 @@ def inventory_delete(request, item_id):
     return render(request, 'delete_inventory.html', {'item': item})
 
 @user_passes_test(lambda u: u.is_staff)
+@login_required
 def borrow_form(request):
     initial = {}
     item_q = request.GET.get('item')
@@ -588,6 +589,7 @@ def borrow_form(request):
             borrow = form.save(commit=False)
             if borrow.inventory_item.borrow(borrow.quantity):
                 borrow.save()
+                messages.success(request, "Item borrowed successfully!")
                 return redirect('inventory_list')
             else:
                 form.add_error('quantity', 'Not enough available quantity')

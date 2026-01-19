@@ -26,7 +26,7 @@ class Player(models.Model):
     jersey_number = models.PositiveIntegerField(unique=True)  # Only 0 and above
     position = models.CharField(max_length=50, choices=POSITION_CHOICES)
     current_school = models.CharField(max_length=100)
-    initial_year = models.IntegerField()
+    initial_year = models.IntegerField(null=True, blank=True)
 
     @property
     def age(self):

@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth import logout
 from django import forms
 import json
 from datetime import date, timedelta
@@ -29,6 +30,14 @@ from .models import Contact
 from .forms import ContactForm
 from django.db.models import Sum
 import re
+
+@login_required
+def logout_confirm(request):
+    if request.method == "POST":
+        logout(request)
+        messages.success(request, "You have been logged out.")
+        return redirect('login')
+    return render(request, 'logout_confirm.html')
 
 @user_passes_test(lambda u: u.is_superuser)
 def add_admin(request):

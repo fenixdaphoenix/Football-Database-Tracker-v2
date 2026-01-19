@@ -131,10 +131,9 @@ class InventoryItemForm(forms.ModelForm):
 class BorrowRecordForm(forms.ModelForm):
     class Meta:
         model = BorrowRecord
-        fields = ['inventory_item', 'player', 'quantity', 'issue_date', 'condition_when_issued', 'notes']
+        fields = ['inventory_item', 'player', 'quantity', 'issue_date', 'condition_when_issued']
         widgets = {
             'issue_date': forms.SelectDateWidget(years=range(2000, date.today().year + 2)),
-            'notes': forms.Textarea(attrs={'rows': 2}),
         }
         
 class ContactForm(forms.ModelForm):

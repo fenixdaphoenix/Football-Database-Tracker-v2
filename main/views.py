@@ -178,6 +178,11 @@ def home(request):
         'injury_type_data': injury_type_data,
         'school_labels': school_labels,
         'school_pass_pct': school_pass_pct,
+        # counts for aggregated statistics
+        'total_players': players.count(),
+        'total_events': Event.objects.count(),
+        'total_equipment': InventoryItem.objects.count(),
+        'total_academics': AcademicRecord.objects.count(),
     }
     return render(request, 'home.html', context)
 
@@ -659,3 +664,24 @@ def add_contact(request):
     else:
         form = ContactForm()
     return render(request, "add_contact.html", {"form": form})
+
+@user_passes_test(lambda u: u.is_staff)
+def edit_contact(request, contact_id):
+    contact = get_object_or_404(Contact, pk=contact_id)
+    if request.method == "POST":
+        form = ContactForm(request.POST, instance=contact)
+        if form.is_valid():
+            form.save()
+            return redirect('contact_info')
+    else:
+        form = ContactForm(instance=contact)
+    return render(request, "add_contact.html", {"form": form, "contact": contact})
+
+
+@user_passes_test(lambda u: u.is_staff)
+def delete_contact(request, contact_id):
+    contact = get_object_or_404(Contact, pk=contact_id)
+    if request.method == "POST":
+        contact.delete()
+        return redirect('contact_info')
+    return render(request, "delete_contact.html", {"contact": contact})

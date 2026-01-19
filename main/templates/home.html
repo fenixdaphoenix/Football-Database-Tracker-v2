@@ -205,7 +205,7 @@
   const palette = ['#4a4dfd','#ef4444','#10b981','#f59e0b','#8b5cf6','#06b6d4','#fb7185','#60a5fa','#a3e635'];
 
   // build legend nodes
-  function buildLegend(containerId, labels, colors) {
+  function buildLegend(containerId, labels, colors, data) {
     const c = document.getElementById(containerId);
     if(!c) return;
     c.innerHTML = '';
@@ -215,7 +215,8 @@
       span.style.alignItems='center';
       span.style.gap='6px';
       span.style.marginRight='8px';
-      span.innerHTML = '<i style="width:12px;height:12px;background:'+ (colors[i]||'#ddd') +';display:inline-block;border-radius:3px"></i> '+l;
+      const count = data ? ` (${data[i]})` : '';
+      span.innerHTML = '<i style="width:12px;height:12px;background:'+ (colors[i]||'#ddd') +';display:inline-block;border-radius:3px"></i> '+l+count;
       c.appendChild(span);
     });
   }
@@ -229,7 +230,7 @@
       const colors = posData.map((_,i)=>palette[i%palette.length]);
       new Chart(canvas.getContext('2d'), { type:'doughnut', data:{ labels:posLabels, datasets:[{ data:posData, backgroundColor:colors, borderWidth:0 }] }, 
       options:{ responsive:true, maintainAspectRatio:true, cutout:'60%', plugins:{legend:{display:false}} } });
-      buildLegend('positionsLegend', posLabels, posData.map((_,i)=>palette[i%palette.length]));
+      buildLegend('positionsLegend', posLabels, posData.map((_,i)=>palette[i%palette.length]), posData);
     }
   }
 
@@ -242,7 +243,7 @@
       const colors = ageData.map((_,i)=>palette[i%palette.length]);
       new Chart(canvas.getContext('2d'), { type:'doughnut', data:{ labels:ageLabels, datasets:[{ data:ageData, backgroundColor:colors, borderWidth:0 }] }, 
       options:{ responsive:true, maintainAspectRatio:true, cutout:'60%', plugins:{legend:{display:false}} } });
-      buildLegend('agesLegend', ageLabels, colors);
+      buildLegend('agesLegend', ageLabels, colors, ageData);
     }
   }
 
@@ -255,7 +256,7 @@
       const colors = genderData.map((_,i)=>palette[i%palette.length]);
       new Chart(canvas.getContext('2d'), { type:'doughnut', data:{ labels:genderLabels, datasets:[{ data:genderData, backgroundColor:colors, borderWidth:0 }] }, 
       options:{ responsive:true, maintainAspectRatio:true, cutout:'60%', plugins:{legend:{display:false}} } });
-      buildLegend('gendersLegend', genderLabels, colors);
+      buildLegend('gendersLegend', genderLabels, colors, genderData);
     }
   }
 

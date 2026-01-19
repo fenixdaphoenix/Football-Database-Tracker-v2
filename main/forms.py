@@ -21,13 +21,9 @@ class AdminUserCreationForm(UserCreationForm):
 class PlayerForm(forms.ModelForm):
     class Meta:
         model = Player
-        fields = ['name', 'birth_date', 'jersey_number', 'gender', 'position', 'current_school', 'initial_year']
+        fields = ['name', 'birth_date', 'jersey_number', 'gender', 'position', 'current_school']
         widgets = {
             'birth_date': forms.SelectDateWidget(years=range(2005, date.today().year + 1)),  # Adjust years as needed
-            'initial_year': forms.Select(choices=[(y, y) for y in range(2009, date.today().year + 1)]),
-        }
-        labels = {
-            'initial_year': 'Initial year of participation',
         }
 #_______________________________________________________
 

@@ -51,6 +51,15 @@ LOGIN_EXEMPT_URLS = [
     '/media/',
 ]
 
+# Session security settings - require fresh login daily
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 86400  # 24 hours (1 day)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Clear session when browser closes
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to session cookie
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_HTTPONLY = True  # Prevent JavaScript access to CSRF cookie
+
 ROOT_URLCONF = 'payatas.urls'
 
 TEMPLATES = [

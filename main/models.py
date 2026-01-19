@@ -63,11 +63,10 @@ class InventoryItem(models.Model):
     class Meta:
         db_table = 'main_equipment'
     ITEM_TYPES = (
-        ('jersey', 'Jersey'),
-        ('cleats', 'Cleats'),
-        ('shin_guard', 'Shin Guard'),
-        ('ball', 'Ball'),
-        ('other', 'Other'),
+        ('gym_equipment', 'Gym Equipment'),
+        ('football_equipment', 'Football Equipment'),
+        ('football_accessories', 'Football Accessories'),
+        ('others', 'Others'),
     )
     CONDITION_CHOICES = (
         ('good', 'Good'),

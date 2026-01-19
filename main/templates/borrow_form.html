@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Borrow Item{% endblock %}
 {% block content %}
+<style>
+  html { overflow-y: scroll; }
+</style>
 <h2 class="mb-3">Borrow Item</h2>
 <form method="post" class="card p-3">
   {% csrf_token %}
